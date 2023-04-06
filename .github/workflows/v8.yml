@@ -48,6 +48,7 @@ jobs:
         source ~/.bash_profile
         fetch v8
         cd v8
+        git checkout 7.8.279.23
     
     # patch source code
     - name: patch v8
