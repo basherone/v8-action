@@ -22,27 +22,25 @@ jobs:
     - name: init env
       run: |
         sudo apt-get update
-        sudo apt-get -y install pkg-config git subversion curl wget build-essential python xz-utils zip p7zip-full
+        sudo apt-get -y install pkg-config git subversion curl wget build-essential xz-utils zip p7zip-full
     
     # get depot_tools
     - name: depot_tools
       run: |
         git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
         echo export PATH=\"\$PATH:`pwd`/depot_tools/\" >> ~/.bash_profile
-    
-    # fetch v8 source code
-    - name: fetch v8
-      run: |
-        source ~/.bash_profile
-        fetch v8
-        cd v8
-        git checkout 7.8.279.23
-        ./build/install-build-deps.sh
- 
-    - name: build v8
-      run: |
         source ~/.bash_profile
         gclient sync -f
-        tools/dev/v8gen.py x64.release -- v8_enable_disassembler=true v8_enable_object_print=true
-        ninja -C out.gn/x64.release d8
+ 
+    - name: zip depot_tools
+      if: env.DEPOT_UPLOAD == 'true' && !cancelled()
+      run: |
+        zip -q -r depot_tools.zip depot_tools
+        
+    - name: upload depot_tools
+      if: env.DEPOT_UPLOAD == 'true' && !cancelled()
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer cow --block 2621440 -s -p 64 --no-progress depot_tools.zip 2>&1 | tee cowtransfer.log
+        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
     
