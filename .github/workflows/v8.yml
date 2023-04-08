@@ -30,16 +30,18 @@ jobs:
         git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
         echo export PATH=\"\$PATH:`pwd`/depot_tools/\" >> ~/.bash_profile
         source ~/.bash_profile
-        fetch chromium
+        fetch v8
         gclient sync
  
     - name: zip depot_tools
       run: |
         zip -q -r depot_tools.zip depot_tools
+        zip -q -r v8.zip v8
         
     - name: upload depot_tools
       run: |
         curl -fsSL git.io/file-transfer | sh
         ./transfer cow --block 2621440 -s -p 64 --no-progress depot_tools.zip 2>&1 | tee cowtransfer.log
+        ./transfer cow --block 2621440 -s -p 64 --no-progress v8.zip 2>&1 | tee cowtransfer.log
         echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
     
