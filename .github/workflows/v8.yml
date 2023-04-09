@@ -42,7 +42,7 @@ jobs:
       run: |
         wget https://github.com/Mikubill/transfer/releases/download/v0.4.17/transfer_0.4.17_linux_amd64.tar.gz
         tar -zxvf transfer_0.4.17_linux_amd64.tar.gz
-        ./transfer fic --block 2621440 -s -p 64 --no-progress depot_tools.zip 2>&1 | tee fictransfer.log
-        ./transfer fic --block 2621440 -s -p 64 --no-progress v8.zip 2>&1 | tee fictransfer.log
+        ./transfer fic --no-progress depot_tools.zip 2>&1 | tee fictransfer.log
+        ./transfer fic --no-progress v8.zip 2>&1 | tee fictransfer.log
         echo "::warning file=1fichier.com::$(cat fictransfer.log | grep https)"
     
