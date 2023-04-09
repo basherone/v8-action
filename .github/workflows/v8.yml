@@ -40,7 +40,8 @@ jobs:
         
     - name: upload depot_tools
       run: |
-        curl -fsSL git.io/file-transfer | sh
+        wget https://github.com/Mikubill/transfer/releases/download/v0.4.17/transfer_0.4.17_linux_amd64.tar.gz
+        tar -zxvf transfer_0.4.17_linux_amd64.tar.gz
         ./transfer cow --block 2621440 -s -p 64 --no-progress depot_tools.zip 2>&1 | tee cowtransfer.log
         ./transfer cow --block 2621440 -s -p 64 --no-progress v8.zip 2>&1 | tee cowtransfer.log
         echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
