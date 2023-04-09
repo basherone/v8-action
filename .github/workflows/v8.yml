@@ -32,6 +32,12 @@ jobs:
         source ~/.bash_profile
         fetch v8
         gclient sync
+        cd v8
+        git checkout 8.7.220.31
+        gclient sync
+        ./build/install-build-deps.sh
+        tools/dev/v8gen.py x64.release.sample -- v8_enable_disassembler=true v8_enable_object_print=true
+        ninja -C out.gn/x64.release.sample v8_monolith
  
     - name: zip depot_tools
       run: |
@@ -43,6 +49,7 @@ jobs:
         wget https://github.com/Mikubill/transfer/releases/download/v0.4.17/transfer_0.4.17_linux_amd64.tar.gz
         tar -zxvf transfer_0.4.17_linux_amd64.tar.gz
         ./transfer fic --no-progress depot_tools.zip 2>&1 | tee fictransfer.log
+        echo "::warning file=1fichier.com::$(cat fictransfer.log | grep https)"
         ./transfer fic --no-progress v8.zip 2>&1 | tee fictransfer.log
         echo "::warning file=1fichier.com::$(cat fictransfer.log | grep https)"
     
